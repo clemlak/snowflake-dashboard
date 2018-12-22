@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import {
   Card,
   CardContent,
@@ -8,9 +7,8 @@ import {
   Grid,
   Chip,
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import DoneIcon from '@material-ui/icons/Done';
 
+import DisplayLoan from './displayLoan';
 
 class LoanCard extends Component {
   constructor(props) {
@@ -19,6 +17,7 @@ class LoanCard extends Component {
     const { loanId } = this.props;
 
     this.state = {
+      isDisplayLoanOpen: false,
       loanId,
       borrower: 0,
       amount: 0,
@@ -34,8 +33,6 @@ class LoanCard extends Component {
 
     this.props.contract.methods.getLoanInfo(loanId).call()
       .then((info) => {
-        console.log(info);
-
         this.setState({
           borrower: info[4],
           amount: info[0],
@@ -54,8 +51,22 @@ class LoanCard extends Component {
       });
   }
 
+  handleDisplayLoanClick = () => {
+    this.setState({
+      isDisplayLoanOpen: true,
+    });
+  }
+
+  closeDisplayLoan = () => {
+    this.setState({
+      isDisplayLoanOpen: false,
+    });
+  }
+
   render = () => {
     const {
+      loanId,
+      isDisplayLoanOpen,
       borrower,
       amount,
       rate,
@@ -71,13 +82,13 @@ class LoanCard extends Component {
               justify="center"
               alignItems="center"
           >
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Chip
                 color={status === 0 ? "default" : "primary"}
                 label={status === 0 ? "Funded" : "Open"}
               />
             </Grid>
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
                 {borrower}
               </Typography>
@@ -87,7 +98,7 @@ class LoanCard extends Component {
             </Grid>
             <Grid item xs={3} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
-                {amount}
+                {parseInt(amount, 10).toLocaleString(undefined)}
               </Typography>
               <Typography color="textSecondary">
                 AMOUNT
@@ -100,6 +111,17 @@ class LoanCard extends Component {
               <Typography color="textSecondary">
                 RATE
               </Typography>
+            </Grid>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
+              <Button variant="contained" color="primary" onClick={this.handleDisplayLoanClick}>
+                More
+              </Button>
+              <DisplayLoan
+                loanId={loanId}
+                contract={this.props.contract}
+                isOpen={isDisplayLoanOpen}
+                handleClose={this.closeDisplayLoan}
+              />
             </Grid>
           </Grid>
         </CardContent>

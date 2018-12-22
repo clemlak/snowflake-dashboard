@@ -21,6 +21,8 @@ import RequestLoan from './requestLoan';
 export default function LiquidLoad ({ ein }) {
   const context = useWeb3Context();
 
+  const [username, setUsername] = useState('');
+
   const [loansCount, setLoansCount] = useState('');
 
   const [currentDebt, setCurrentDebt] = useState('');
@@ -77,6 +79,10 @@ export default function LiquidLoad ({ ein }) {
     setRequestLoanOpen(true);
   }
 
+  function closeRequestLoan() {
+    setRequestLoanOpen(false);
+  }
+
   return (
     <div>
       <Typography color="primary" variant="h2" style={{ marginBottom: 20 }}>
@@ -96,7 +102,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {`${currentDebt}`}
+              {parseInt(currentDebt, 10).toLocaleString(undefined)}
             </Typography>
             <Typography color="textSecondary">
               Current debt
@@ -106,7 +112,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {`${lent}`}
+              {parseInt(lent, 10).toLocaleString(undefined)}
             </Typography>
             <Typography color="textSecondary">
               Lent amount
@@ -116,7 +122,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {`${borrowed}`}
+              {parseInt(borrowed, 10).toLocaleString(undefined)}
             </Typography>
             <Typography color="textSecondary">
               Borrowed amount
@@ -126,7 +132,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {`${reimbursed}`}
+              {parseInt(reimbursed, 10).toLocaleString(undefined)}
             </Typography>
             <Typography color="textSecondary">
               Reimbursed amount
@@ -154,6 +160,7 @@ export default function LiquidLoad ({ ein }) {
           <RequestLoan
             contract={liquidLoanContract}
             isOpen={isRequestLoanOpen}
+            handleClose={closeRequestLoan}
           />
         </Grid>
       </Grid>
