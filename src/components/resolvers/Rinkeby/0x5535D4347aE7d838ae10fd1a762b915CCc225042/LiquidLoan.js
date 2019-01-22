@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import Web3 from 'web3';
 import {
-  TextField,
   Typography,
   Button,
   Grid,
@@ -10,11 +10,9 @@ import {
   Tab,
   AppBar,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import { useAccountEffect, useWeb3Context } from 'web3-react/hooks';
 
 import { useGenericContract, useNamedContract } from '../../../../common/hooks'
-import TransactionButton from '../../../common/TransactionButton'
 
 import { ABI } from './index';
 
@@ -35,13 +33,10 @@ export default function LiquidLoad ({ ein }) {
   const [borrowed, setBorrowed] = useState('');
   const [reimbursed, setReimbursed] = useState('');
 
-  const [newAmount, setNewAmount] = useState('');
-  const [newRate, setNewRate] = useState('');
-
   const [isRequestLoanOpen, setRequestLoanOpen] = useState(false);
 
   const clientRaindropContract = useNamedContract('clientRaindrop');
-  const liquidLoanContract = useGenericContract('0x863EDE71E60BC8C96Ea7CBc59057A4D063eD158D', ABI);
+  const liquidLoanContract = useGenericContract('0x5535D4347aE7d838ae10fd1a762b915CCc225042', ABI);
 
   useAccountEffect(() => {
     liquidLoanContract.methods.getUserinfo(ein).call()
@@ -94,20 +89,7 @@ export default function LiquidLoad ({ ein }) {
 
   return (
     <div>
-      <AppBar position="static">
-        <Tabs value={tabValue} onChange={updateTabValue}>
-          <Tab label="Item one" />
-          <Tab label="Item two" />
-          <Tab label="Item three" />
-        </Tabs>
-      </AppBar>
-      {tabValue === 0 && <Typography component="div" style={{ padding: 8 * 3 }}>Item one</Typography>}
-      {tabValue === 1 && <Paper>Item two</Paper>}
-      {tabValue === 2 && <Paper>Item three</Paper>}
-      <Typography color="primary" variant="h2" style={{ marginBottom: 20 }}>
-        Welcome to LiquidLoan!
-      </Typography>
-      <Typography color="primary" variant="h3" style={{ marginBottom: 20 }}>
+      <Typography color="primary" variant="h5" style={{ marginBottom: 20 }}>
         Your profile
       </Typography>
       <Grid
@@ -121,7 +103,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {parseInt(currentDebt, 10).toLocaleString(undefined)}
+              {Web3.utils.fromWei(currentDebt.toString())}
             </Typography>
             <Typography color="textSecondary">
               Current debt
@@ -131,7 +113,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {parseInt(lent, 10).toLocaleString(undefined)}
+              {Web3.utils.fromWei(lent.toString())}
             </Typography>
             <Typography color="textSecondary">
               Lent amount
@@ -141,7 +123,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {parseInt(borrowed, 10).toLocaleString(undefined)}
+              {Web3.utils.fromWei(borrowed.toString())}
             </Typography>
             <Typography color="textSecondary">
               Borrowed amount
@@ -151,7 +133,7 @@ export default function LiquidLoad ({ ein }) {
         <Grid item xs={3}>
           <Paper style={{ padding: 10, textAlign: 'center' }}>
             <Typography color="primary" variant="h4">
-              {parseInt(reimbursed, 10).toLocaleString(undefined)}
+              {Web3.utils.fromWei(reimbursed.toString())}
             </Typography>
             <Typography color="textSecondary">
               Reimbursed amount
@@ -159,35 +141,48 @@ export default function LiquidLoad ({ ein }) {
           </Paper>
         </Grid>
       </Grid>
-      <Divider variant="middle"  style={{ marginBottom: 20 }} />
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        style={{ marginBottom: 20 }}
-      >
-        <Grid item xs={6}>
-          <Typography color="primary" variant="h3">
-            {`${loansCount} loans found`}
-          </Typography>
-        </Grid>
-        <Grid item xs={6} style={{ textAlign: 'right'}}>
-          <Button variant="contained" color="primary" onClick={ handleNewLoanClick }>
-            Request new loan
-          </Button>
-          <RequestLoan
-            contract={liquidLoanContract}
-            isOpen={isRequestLoanOpen}
-            handleClose={closeRequestLoan}
-          />
-        </Grid>
-      </Grid>
-      <Grid container>
-        <Grid item xs={12}>
-          {displayLoanCards()}
-        </Grid>
-      </Grid>
+      <Divider variant="middle" style={{ marginBottom: 20 }} />
+      <AppBar position="static" style={{ marginBottom: 20 }} >
+        <Tabs value={tabValue} onChange={updateTabValue}>
+          <Tab label="All loans" />
+          <Tab label="Lent" />
+          <Tab label="Borrowed" />
+        </Tabs>
+      </AppBar>
+      {tabValue === 0 &&
+        <div>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            style={{ marginBottom: 20 }}
+          >
+            <Grid item xs={6}>
+              <Typography color="primary" variant="h5">
+                {`${loansCount} loans found`}
+              </Typography>
+            </Grid>
+            <Grid item xs={6} style={{ textAlign: 'right'}}>
+              <Button variant="contained" color="primary" onClick={ handleNewLoanClick }>
+                Request new loan
+              </Button>
+              <RequestLoan
+                contract={liquidLoanContract}
+                isOpen={isRequestLoanOpen}
+                handleClose={closeRequestLoan}
+              />
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item xs={12}>
+              {displayLoanCards()}
+            </Grid>
+          </Grid>
+        </div>
+      }
+      {tabValue === 1 && <Typography component="div" style={{ padding: 8 * 3 }}>Item one</Typography>}
+      {tabValue === 2 && <Paper>Item three</Paper>}
     </div>
   );
 }

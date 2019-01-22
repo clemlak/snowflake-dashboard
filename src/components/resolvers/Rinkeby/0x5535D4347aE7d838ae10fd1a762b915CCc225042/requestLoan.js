@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Web3 from 'web3';
 import {
   Typography,
   Grid,
@@ -51,7 +52,6 @@ class RequestLoan extends Component {
   handleNewValueChange = (event, value) => {
     this.setState({
       newAmount: value,
-      amountWithDecimals: value * 10 ** 18,
     });
   }
 
@@ -81,7 +81,6 @@ class RequestLoan extends Component {
       newRate,
       deadline,
       isOpen,
-      amountWithDecimals,
     } = this.state;
 
     return (
@@ -229,7 +228,7 @@ class RequestLoan extends Component {
         <DialogActions>
           <TransactionButton
             readyText='Accept'
-            method={() => this.props.contract.methods.requestLoan(newAmount, newRate, this.calculateDeadline() )}
+            method={() => this.props.contract.methods.requestLoan(Web3.utils.toWei(newAmount.toString()), newRate, this.calculateDeadline() )}
           />
           <Button variant="outlined" onClick={this.props.handleClose}>
             Cancel

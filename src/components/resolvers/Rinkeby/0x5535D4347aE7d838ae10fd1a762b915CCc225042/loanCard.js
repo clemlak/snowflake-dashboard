@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Web3 from 'web3';
 import {
   Card,
   CardContent,
@@ -98,7 +99,7 @@ class LoanCard extends Component {
             </Grid>
             <Grid item xs={3} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
-                {parseInt(amount, 10).toLocaleString(undefined)}
+                {Web3.utils.fromWei(amount.toString())}
               </Typography>
               <Typography color="textSecondary">
                 AMOUNT

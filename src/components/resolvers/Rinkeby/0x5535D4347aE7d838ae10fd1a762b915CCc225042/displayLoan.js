@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Web3 from 'web3';
 import {
   Card,
   CardActions,
@@ -181,7 +182,7 @@ class DisplayLoan extends Component {
 
             <Grid item xs={3} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
-                {parseInt(amount, 10).toLocaleString(undefined)}
+                {Web3.utils.fromWei(amount.toString())}
               </Typography>
               <Typography color="textSecondary">
                 AMOUNT
@@ -190,7 +191,7 @@ class DisplayLoan extends Component {
 
             <Grid item xs={3} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
-                {parseInt(currentDebt, 10).toLocaleString(undefined)}
+                {Web3.utils.fromWei(currentDebt.toString())}
               </Typography>
               <Typography color="textSecondary">
                 CURRENT DEBT
