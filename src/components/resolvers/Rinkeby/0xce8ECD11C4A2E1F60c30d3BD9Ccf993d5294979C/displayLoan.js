@@ -120,8 +120,32 @@ class DisplayLoan extends Component {
         open={isOpen}
         onClose={this.props.handleClose}
       >
-        <DialogTitle id="form-dialog-title">Loan #{loanId}</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Loan #{loanId}
+          {' '}
+          <Chip
+            color={status === 0 ? "default" : "primary"}
+            label={status === 0 ? "Funded" : "Open"}
+          />
+        </DialogTitle>
         <DialogContent>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
+            <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+              <Avatar>
+                {borrower}
+              </Avatar>
+            </Grid>
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <Typography style={{ marginBottom: 20 }}>
+                is requesting a loan
+              </Typography>
+            </Grid>
+          </Grid>
           <Grid
             container
             direction="row"
@@ -130,57 +154,7 @@ class DisplayLoan extends Component {
             spacing={16}
           >
 
-            <Grid item xs={12}>
-              <Paper>
-                <Avatar>{borrower}</Avatar>
-              </Paper>
-              <Chip
-                color={status === 0 ? "default" : "primary"}
-                label={status === 0 ? "Funded" : "Open"}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <LinearProgress variant="determinate" value={10} />
-            </Grid>
-
-            <Grid item xs={2} style={{ textAlign: 'center' }}>
-              <Typography color="primary" variant="h4">
-                {lender}
-              </Typography>
-              <Typography color="textSecondary">
-                LENDER
-              </Typography>
-            </Grid>
-
-            <Grid item xs={2} style={{ textAlign: 'center' }}>
-              <Typography color="primary" variant="h4">
-                {borrower}
-              </Typography>
-              <Typography color="textSecondary">
-                BORROWER
-              </Typography>
-            </Grid>
-
-            <Grid item xs={2} style={{ textAlign: 'center' }}>
-              <Typography color="primary" variant="h4">
-                {deadline}
-              </Typography>
-              <Typography color="textSecondary">
-                DEADLINE
-              </Typography>
-            </Grid>
-
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
-              <Typography color="primary" variant="h4">
-                {`${rate}%`}
-              </Typography>
-              <Typography color="textSecondary">
-                RATE
-              </Typography>
-            </Grid>
-
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
                 {Web3.utils.fromWei(amount.toString())}
               </Typography>
@@ -189,16 +163,23 @@ class DisplayLoan extends Component {
               </Typography>
             </Grid>
 
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {`${rate}%`}
+              </Typography>
+              <Typography color="textSecondary">
+                RATE
+              </Typography>
+            </Grid>
+
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
                 {Web3.utils.fromWei(currentDebt.toString())}
               </Typography>
               <Typography color="textSecondary">
-                CURRENT DEBT
+                TOTAL
               </Typography>
             </Grid>
-
-
 
           </Grid>
         </DialogContent>
