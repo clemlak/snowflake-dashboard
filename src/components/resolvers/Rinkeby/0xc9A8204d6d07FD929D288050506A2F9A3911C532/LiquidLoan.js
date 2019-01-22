@@ -6,6 +6,9 @@ import {
   Grid,
   Paper,
   Divider,
+  Tabs,
+  Tab,
+  AppBar,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { useAccountEffect, useWeb3Context } from 'web3-react/hooks';
@@ -20,6 +23,8 @@ import RequestLoan from './requestLoan';
 
 export default function LiquidLoad ({ ein }) {
   const context = useWeb3Context();
+
+  const [tabValue, setTabValue] = useState(0);
 
   const [username, setUsername] = useState('');
 
@@ -36,7 +41,7 @@ export default function LiquidLoad ({ ein }) {
   const [isRequestLoanOpen, setRequestLoanOpen] = useState(false);
 
   const clientRaindropContract = useNamedContract('clientRaindrop');
-  const liquidLoanContract = useGenericContract('0xA08C8d362aE5BcA6777Ea99951971aFAFFdC5D92', ABI);
+  const liquidLoanContract = useGenericContract('0xc9A8204d6d07FD929D288050506A2F9A3911C532', ABI);
 
   useAccountEffect(() => {
     liquidLoanContract.methods.getUserinfo(ein).call()
@@ -58,6 +63,10 @@ export default function LiquidLoad ({ ein }) {
         console.log(err);
       });
   });
+
+  function updateTabValue(e, newValue) {
+    setTabValue(newValue);
+  }
 
   function displayLoanCards() {
     const loans = [];
@@ -85,6 +94,16 @@ export default function LiquidLoad ({ ein }) {
 
   return (
     <div>
+      <AppBar position="static">
+        <Tabs value={tabValue} onChange={updateTabValue}>
+          <Tab label="Item one" />
+          <Tab label="Item two" />
+          <Tab label="Item three" />
+        </Tabs>
+      </AppBar>
+      {tabValue === 0 && <Typography component="div" style={{ padding: 8 * 3 }}>Item one</Typography>}
+      {tabValue === 1 && <Paper>Item two</Paper>}
+      {tabValue === 2 && <Paper>Item three</Paper>}
       <Typography color="primary" variant="h2" style={{ marginBottom: 20 }}>
         Welcome to LiquidLoan!
       </Typography>

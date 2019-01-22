@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle,
   LinearProgress,
+  Chip,
 } from '@material-ui/core';
 
 import TransactionButton from '../../../common/TransactionButton';
@@ -127,14 +128,88 @@ class DisplayLoan extends Component {
             alignItems="center"
             spacing={16}
           >
+
             <Grid item xs={12}>
-              <Avatar>{borrower}</Avatar>
+              <Paper>
+                <Avatar>{borrower}</Avatar>
+              </Paper>
+              <Chip
+                color={status === 0 ? "default" : "primary"}
+                label={status === 0 ? "Funded" : "Open"}
+              />
             </Grid>
+
             <Grid item xs={12}>
               <LinearProgress variant="determinate" value={10} />
             </Grid>
+
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {lender}
+              </Typography>
+              <Typography color="textSecondary">
+                LENDER
+              </Typography>
+            </Grid>
+
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {borrower}
+              </Typography>
+              <Typography color="textSecondary">
+                BORROWER
+              </Typography>
+            </Grid>
+
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {deadline}
+              </Typography>
+              <Typography color="textSecondary">
+                DEADLINE
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {`${rate}%`}
+              </Typography>
+              <Typography color="textSecondary">
+                RATE
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {parseInt(amount, 10).toLocaleString(undefined)}
+              </Typography>
+              <Typography color="textSecondary">
+                AMOUNT
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {parseInt(currentDebt, 10).toLocaleString(undefined)}
+              </Typography>
+              <Typography color="textSecondary">
+                CURRENT DEBT
+              </Typography>
+            </Grid>
+
+
+
           </Grid>
         </DialogContent>
+        <DialogActions>
+          <TransactionButton
+            readyText='Fund this loan'
+            method={() => this.props.contract.methods.lend(loanId)}
+          />
+          <Button variant="outlined" onClick={this.props.handleClose}>
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   }
