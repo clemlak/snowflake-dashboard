@@ -41,7 +41,7 @@ export default function LiquidLoad ({ ein }) {
   const [isRequestLoanOpen, setRequestLoanOpen] = useState(false);
 
   const clientRaindropContract = useNamedContract('clientRaindrop');
-  const liquidLoanContract = useGenericContract('0xc9A8204d6d07FD929D288050506A2F9A3911C532', ABI);
+  const liquidLoanContract = useGenericContract('0x863EDE71E60BC8C96Ea7CBc59057A4D063eD158D', ABI);
 
   useAccountEffect(() => {
     liquidLoanContract.methods.getUserinfo(ein).call()
