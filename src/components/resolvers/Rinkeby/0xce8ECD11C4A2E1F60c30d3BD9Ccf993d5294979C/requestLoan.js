@@ -92,7 +92,7 @@ class RequestLoan extends Component {
         <DialogTitle id="form-dialog-title">New loan</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You are about to request a new loan, please fill the following form.
+            You are about to request a new loan, please fill the following form:
           </DialogContentText>
           <Grid
               container

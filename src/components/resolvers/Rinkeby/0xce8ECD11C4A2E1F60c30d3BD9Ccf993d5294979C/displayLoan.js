@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import {
-  Card,
-  CardActions,
-  CardContent,
   Button,
   Typography,
-  Modal,
   Grid,
-  Paper,
   Avatar,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  LinearProgress,
   Chip,
+  Divider,
 } from '@material-ui/core';
 
 import TransactionButton from '../../../common/TransactionButton';
@@ -135,24 +129,98 @@ class DisplayLoan extends Component {
             justify="center"
             alignItems="center"
           >
-            <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-              <Avatar>
-                {borrower}
-              </Avatar>
-            </Grid>
+
+            {status === '0' ? (
+              <div>
+                <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+                  <Avatar>
+                    {borrower}
+                  </Avatar>
+                </Grid>
+
+                <Grid item xs={12} style={{ textAlign: 'center' }}>
+                  <Typography style={{ marginBottom: 20 }}>
+                    is requesting a loan
+                  </Typography>
+                </Grid>
+              </div>
+            ) : (
+              <div>
+                <Grid xs item style={{ textAlign: 'center', justifyContent: 'center' }}>
+                  <Typography style={{ marginBottom: 10 }} color="primary" variant="h5">
+                    {borrower}
+                  </Typography>
+                  <Typography style={{ marginBottom: 20 }}>
+                    has found a loan
+                  </Typography>
+                </Grid>
+
+                <Grid xs item style={{ textAlign: 'center'}}>
+                  <Typography style={{ marginBottom: 10 }} color="primary" variant="h5">
+                    {lender}
+                  </Typography>
+                  <Typography style={{ marginBottom: 20 }}>
+                    has lent some funds
+                  </Typography>
+                </Grid>
+              </div>
+            )}
+
             <Grid item xs={12} style={{ textAlign: 'center' }}>
-              <Typography style={{ marginBottom: 20 }}>
-                is requesting a loan
+              <Divider variant="middle" style={{ margin: '20px 0px' }}/>
+            </Grid>
+
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <Typography color="primary" style={{ marginBottom: 20 }}>
+                Borrower metrics
               </Typography>
             </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            spacing={16}
-          >
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {Web3.utils.fromWei(borrowerCurrentDebt.toString())}
+              </Typography>
+              <Typography color="textSecondary">
+                Current debt
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {Web3.utils.fromWei(borrowerLent.toString())}
+              </Typography>
+              <Typography color="textSecondary">
+                Total lent
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {Web3.utils.fromWei(borrowerBorrowed.toString())}
+              </Typography>
+              <Typography color="textSecondary">
+                Total borrowed
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {Web3.utils.fromWei(borrowerReimbursed.toString())}
+              </Typography>
+              <Typography color="textSecondary">
+                Total reimbursed
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <Divider variant="middle" style={{ margin: '20px 0px' }}/>
+            </Grid>
+
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <Typography color="primary" style={{ marginBottom: 20 }}>
+                Loan metrics
+              </Typography>
+            </Grid>
 
             <Grid item xs={4} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
@@ -177,19 +245,21 @@ class DisplayLoan extends Component {
                 {Web3.utils.fromWei(currentDebt.toString())}
               </Typography>
               <Typography color="textSecondary">
-                TOTAL
+                DUE
               </Typography>
             </Grid>
 
           </Grid>
         </DialogContent>
         <DialogActions>
-          <TransactionButton
-            readyText='Fund this loan'
-            method={() => this.props.contract.methods.lend(loanId)}
-          />
+          {status === '0' &&
+            <TransactionButton
+              readyText='Fund this loan'
+              method={() => this.props.contract.methods.lend(loanId)}
+            />
+          }
           <Button variant="outlined" onClick={this.props.handleClose}>
-            Cancel
+            Close
           </Button>
         </DialogActions>
       </Dialog>

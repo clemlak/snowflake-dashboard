@@ -24,8 +24,6 @@ export default function LiquidLoad ({ ein }) {
 
   const [tabValue, setTabValue] = useState(0);
 
-  const [username, setUsername] = useState('');
-
   const [loansCount, setLoansCount] = useState('');
 
   const [currentDebt, setCurrentDebt] = useState('');
@@ -38,7 +36,6 @@ export default function LiquidLoad ({ ein }) {
 
   const [isRequestLoanOpen, setRequestLoanOpen] = useState(false);
 
-  const clientRaindropContract = useNamedContract('clientRaindrop');
   const liquidLoanContract = useGenericContract('0xce8ECD11C4A2E1F60c30d3BD9Ccf993d5294979C', ABI);
 
   useAccountEffect(() => {
@@ -169,7 +166,7 @@ export default function LiquidLoad ({ ein }) {
               {Web3.utils.fromWei(lent.toString())}
             </Typography>
             <Typography color="textSecondary">
-              Lent amount
+              Total lent
             </Typography>
           </Paper>
         </Grid>
@@ -179,7 +176,7 @@ export default function LiquidLoad ({ ein }) {
               {Web3.utils.fromWei(borrowed.toString())}
             </Typography>
             <Typography color="textSecondary">
-              Borrowed amount
+              Total borrowed
             </Typography>
           </Paper>
         </Grid>
@@ -189,7 +186,7 @@ export default function LiquidLoad ({ ein }) {
               {Web3.utils.fromWei(reimbursed.toString())}
             </Typography>
             <Typography color="textSecondary">
-              Reimbursed amount
+              Total reimbursed
             </Typography>
           </Paper>
         </Grid>

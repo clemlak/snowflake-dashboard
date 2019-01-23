@@ -24,6 +24,7 @@ class LoanCard extends Component {
       amount: 0,
       rate: 0,
       status: 0,
+      currentDebt: 0,
     };
   }
 
@@ -38,6 +39,7 @@ class LoanCard extends Component {
           borrower: info[4],
           amount: info[0],
           rate: info[2],
+          currentDebt: info[1],
         });
 
         return this.props.contract.methods.getLoanStatus(loanId).call();
@@ -72,6 +74,7 @@ class LoanCard extends Component {
       amount,
       rate,
       status,
+      currentDebt,
     } = this.state;
 
     return (
@@ -85,8 +88,8 @@ class LoanCard extends Component {
           >
             <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Chip
-                color={status === 0 ? "default" : "primary"}
-                label={status === 0 ? "Funded" : "Open"}
+                color={status === '0' ?  "primary" : "default"}
+                label={status === '0' ? "Open" : "Funded"}
               />
             </Grid>
             <Grid item xs={2} style={{ textAlign: 'center' }}>
@@ -97,7 +100,7 @@ class LoanCard extends Component {
                 BORROWER
               </Typography>
             </Grid>
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
                 {Web3.utils.fromWei(amount.toString())}
               </Typography>
@@ -105,12 +108,20 @@ class LoanCard extends Component {
                 AMOUNT
               </Typography>
             </Grid>
-            <Grid item xs={3} style={{ textAlign: 'center' }}>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">
                 {`${rate}%`}
               </Typography>
               <Typography color="textSecondary">
                 RATE
+              </Typography>
+            </Grid>
+            <Grid item xs={2} style={{ textAlign: 'center' }}>
+              <Typography color="primary" variant="h4">
+                {Web3.utils.fromWei(currentDebt.toString())}
+              </Typography>
+              <Typography color="textSecondary">
+                DUE
               </Typography>
             </Grid>
             <Grid item xs={2} style={{ textAlign: 'center' }}>
