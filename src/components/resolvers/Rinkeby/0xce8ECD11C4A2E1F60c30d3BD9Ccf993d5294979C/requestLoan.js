@@ -72,7 +72,7 @@ class RequestLoan extends Component {
       deadline,
     } = this.state;
 
-    return Math.round(Date.now() / 1000) + (deadline * 1000 * 60 * 60 * 24);
+    return Math.round(Date.now() / 1000) + (deadline * 60 * 60 * 24);
   }
 
   render = () => {
@@ -111,8 +111,8 @@ class RequestLoan extends Component {
                 aria-labelledby="label"
                 style={{ padding: '22px 0px' }}
                 min={500}
-                max={5000000}
-                step={500}
+                max={2000000}
+                step={1000}
               />
             </Grid>
             <Grid item xs={4} style={{ textAlign: 'left' }}>
@@ -130,7 +130,7 @@ class RequestLoan extends Component {
             </Grid>
             <Grid item xs={4} style={{ textAlign: 'right' }}>
               <Typography color="textSecondary">
-                5 000 000 HYDRO
+                2 000 000 HYDRO
               </Typography>
             </Grid>
 
@@ -185,7 +185,7 @@ class RequestLoan extends Component {
                 aria-labelledby="label"
                 style={{ padding: '22px 0px' }}
                 min={1}
-                max={365}
+                max={180}
                 step={1}
               />
             </Grid>
@@ -204,7 +204,7 @@ class RequestLoan extends Component {
             </Grid>
             <Grid item xs={4} style={{ textAlign: 'right' }}>
               <Typography color="textSecondary">
-                365 days
+                180 days
               </Typography>
             </Grid>
 
