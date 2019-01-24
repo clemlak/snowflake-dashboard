@@ -8,7 +8,9 @@ import {
   Grid,
   Chip,
 } from '@material-ui/core';
-
+import DoneIcon from '@material-ui/icons/Done';
+import HelpIcon from '@material-ui/icons/Help';
+import MoneyIcon from '@material-ui/icons/Money';
 import DisplayLoan from './displayLoan';
 
 class LoanCard extends Component {
@@ -66,6 +68,20 @@ class LoanCard extends Component {
     });
   }
 
+  displayLoanStatus = () => {
+    const {
+      status,
+    } = this.state;
+
+    if (status === '0') {
+      return <Chip color="primary" label="Open" icon={<HelpIcon />} />;
+    } else if (status === '1') {
+      return <Chip color="default" label="Funded" icon={<MoneyIcon />} />;
+    } else if (status === '2') {
+      return <Chip color="secondary" label="Completed" icon={<DoneIcon />} />;
+    }
+  }
+
   render = () => {
     const {
       loanId,
@@ -73,7 +89,6 @@ class LoanCard extends Component {
       borrower,
       amount,
       rate,
-      status,
       currentDebt,
     } = this.state;
 
@@ -87,10 +102,7 @@ class LoanCard extends Component {
               alignItems="center"
           >
             <Grid item xs={2} style={{ textAlign: 'center' }}>
-              <Chip
-                color={status === '0' ?  "primary" : "default"}
-                label={status === '0' ? "Open" : "Funded"}
-              />
+              {this.displayLoanStatus()}
             </Grid>
             <Grid item xs={2} style={{ textAlign: 'center' }}>
               <Typography color="primary" variant="h4">

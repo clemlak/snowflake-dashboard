@@ -12,7 +12,11 @@ import {
   Chip,
   Divider,
   LinearProgress,
+  TextField,
 } from '@material-ui/core';
+import DoneIcon from '@material-ui/icons/Done';
+import HelpIcon from '@material-ui/icons/Help';
+import MoneyIcon from '@material-ui/icons/Money';
 
 import TransactionButton from '../../../common/TransactionButton';
 
@@ -39,6 +43,7 @@ class DisplayLoan extends Component {
       borrowerLent: 0,
       borrowerBorrowed: 0,
       borrowerReimbursed: 0,
+      reimburseNow: 0,
     };
   }
 
@@ -109,15 +114,98 @@ class DisplayLoan extends Component {
       currentDebt,
       amount,
       rate,
+      reimburseNow,
+      loanId,
+      status,
     } = this.state;
 
-    const due = amount + (amount * rate / 100);
+    const BN = Web3.utils.BN;
 
-    const progress = due / currentDebt * 100;
+    const bigAmount = new BN(amount);
+    const bigDebt = new BN(currentDebt);
+    const bigRate = new BN(rate);
+    const bigHundred = new BN(100);
 
-    console.log(progress);
+    const bigInterests = bigAmount.mul(bigRate).div(bigHundred);
 
-    return <LinearProgress color="secondary" variant="determinate" value={progress} />;
+    const bigDue = bigAmount.add(bigInterests);
+
+    const bigProgress = bigDue.sub(bigDebt);
+
+    let bigProgressPercents = new BN(0);
+
+    if (!bigDue.isZero()) {
+      bigProgressPercents = bigProgress.mul(bigHundred).div(bigDue);
+    }
+
+    return (
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs={12} style={{ textAlign: 'center' }}>
+          <Typography color="primary" style={{ marginBottom: 20 }}>
+            Reimbursement
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12} style={{ marginBottom: 10 }}>
+          <LinearProgress color="secondary" variant="determinate" value={bigProgressPercents.toNumber()} />
+        </Grid>
+
+        <Grid item xs={12} style={{ marginBottom: 20, textAlign: 'center' }}>
+          <Typography color="primary" variant="h5">
+            {Web3.utils.fromWei(bigProgress.toString())}
+          </Typography>
+          <Typography>
+            were reimbursed
+          </Typography>
+        </Grid>
+
+        {status === '1' &&
+          <div>
+            <Grid item xs={6} style={{ marginBottom: 20, textAlign: 'center' }}>
+              <TextField
+                id="reimbursedAmount"
+                label="Reimburse now"
+                value={reimburseNow}
+                onChange={this.handleChange('reimburseNow')}
+                margin="normal"
+              />
+            </Grid>
+
+            <Grid item xs={6} style={{ marginBottom: 20, textAlign: 'center' }}>
+              <TransactionButton
+                readyText='Reimburse'
+                method={() => this.props.contract.methods.reimburse(loanId, Web3.utils.toWei(reimburseNow.toString() ))}
+              />
+            </Grid>
+          </div>
+        }
+      </Grid>
+    );
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  }
+
+  displayLoanStatus = () => {
+    const {
+      status,
+    } = this.state;
+
+    if (status === '0') {
+      return <Chip color="primary" label="Open" icon={<HelpIcon />} />;
+    } else if (status === '1') {
+      return <Chip color="default" label="Funded" icon={<MoneyIcon />} />;
+    } else if (status === '2') {
+      return <Chip color="secondary" label="Completed" icon={<DoneIcon />} />;
+    }
   }
 
   render = () => {
@@ -143,14 +231,9 @@ class DisplayLoan extends Component {
         onClose={this.props.handleClose}
       >
         <DialogTitle id="form-dialog-title">
-          <Typography style={{ marginBottom: 10 }} color="primary">
-            Loan {loanId}
-            <Chip
-              color={status === '0' ? "default" : "primary"}
-              label={status === '0' ? "Funded" : "Open"}
-            />            
-          </Typography>
-
+          Loan {loanId}
+          {' '}
+          {this.displayLoanStatus()}
         </DialogTitle>
         <DialogContent>
           <Grid
@@ -161,9 +244,14 @@ class DisplayLoan extends Component {
           >
 
             {status === '0' ? (
-              <div>
+              <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
                 <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                  <Avatar>
+                  <Avatar style={{ marginBottom: 10 }}>
                     {borrower}
                   </Avatar>
                 </Grid>
@@ -173,27 +261,35 @@ class DisplayLoan extends Component {
                     is requesting a loan
                   </Typography>
                 </Grid>
-              </div>
+              </Grid>
             ) : (
-              <div>
-                <Grid xs item style={{ textAlign: 'center', justifyContent: 'center' }}>
-                  <Typography style={{ marginBottom: 10 }} color="primary" variant="h5">
+              <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+              >
+                <Grid item xs={3} style={{ textAlign: 'center', justifyContent: 'center' }}>
+                  <Avatar style={{ margin: '0 auto', marginBottom: 10 }}>
                     {borrower}
-                  </Typography>
-                  <Typography style={{ marginBottom: 20 }}>
-                    has found a loan
+                  </Avatar>
+
+                  <Typography color="textSecondary">
+                    requested a loan
                   </Typography>
                 </Grid>
 
-                <Grid xs item style={{ textAlign: 'center'}}>
-                  <Typography style={{ marginBottom: 10 }} color="primary" variant="h5">
+                <Grid item xs={3} style={{ textAlign: 'center' }}>
+                  <Avatar style={{ margin: '0 auto', marginBottom: 10 }}>
                     {lender}
-                  </Typography>
-                  <Typography style={{ marginBottom: 20 }}>
-                    has lent some funds
+                  </Avatar>
+
+                  <Typography color="textSecondary">
+                    funded the loan
                   </Typography>
                 </Grid>
-              </div>
+
+              </Grid>
             )}
 
             <Grid item xs={12} style={{ textAlign: 'center' }}>
@@ -288,9 +384,15 @@ class DisplayLoan extends Component {
               </Typography>
             </Grid>
 
-            <Grid item xs={12}>
-              {status !== '0' && this.displayProgress()}
-            </Grid>
+            {status !== '0' &&
+              <Grid item xs={12} style={{ textAlign: 'center' }}>
+                <Divider variant="middle" style={{ margin: '20px 0px' }}/>
+              </Grid>
+            }
+
+            {status !== '0' &&
+              this.displayProgress()
+            }
 
           </Grid>
         </DialogContent>

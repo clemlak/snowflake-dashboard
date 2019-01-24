@@ -36,7 +36,7 @@ export default function LiquidLoad ({ ein }) {
 
   const [isRequestLoanOpen, setRequestLoanOpen] = useState(false);
 
-  const liquidLoanContract = useGenericContract('0xce8ECD11C4A2E1F60c30d3BD9Ccf993d5294979C', ABI);
+  const liquidLoanContract = useGenericContract('0x0baC4b2C789318a74744F33cFED309B7b00fd221', ABI);
 
   useAccountEffect(() => {
     liquidLoanContract.methods.getUserinfo(ein).call()
@@ -61,7 +61,6 @@ export default function LiquidLoad ({ ein }) {
     liquidLoanContract.methods.getUserLentLoans(ein).call()
       .then((lentLoans) => {
         setLentLoans(lentLoans);
-        console.log('Lent loans:', lentLoans);
       })
       .catch((err) => {
         console.log(err);
@@ -70,7 +69,6 @@ export default function LiquidLoad ({ ein }) {
     liquidLoanContract.methods.getUserBorrowedLoans(ein).call()
       .then((borrowedLoans) => {
         setBorrowedLoans(borrowedLoans);
-        console.log('Borrowed loans:', borrowedLoans);
       })
       .catch((err) => {
         console.log(err);

@@ -231,7 +231,7 @@ class RequestLoan extends Component {
             method={() => this.props.contract.methods.requestLoan(Web3.utils.toWei(newAmount.toString()), newRate, this.calculateDeadline() )}
           />
           <Button variant="outlined" onClick={this.props.handleClose}>
-            Cancel
+            Close
           </Button>
         </DialogActions>
       </Dialog>
